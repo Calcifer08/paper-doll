@@ -17,6 +17,7 @@ public class CompositeItem : Item
 
     _handController.TakeItem(_rectTrans);
 
+    // чтобы верхний конец предмета в руке был по центру объекта краски
     Vector3 targetPos = _handController.CalculateGripPositionWithOffset(_rectMakeupOption, _triggerItemZone);
     yield return StartCoroutine(_handController.MoveToItem(targetPos, _durationMoveHand));
     
@@ -25,6 +26,8 @@ public class CompositeItem : Item
 
     Vector3 target = GameManager.Instance.FaceZone.position;
     yield return StartCoroutine(_handController.MoveToHalfCoroutine(target, _durationMoveHand));
+
+    _handController.EndInteract();
   }
 
   public override IEnumerator HandleDrop()
@@ -57,6 +60,7 @@ public class CompositeItem : Item
     ClearItemColor();
   }
 
+  // активирует составной предмет (кисть), то же, что и при клике по простому предмету
   public void Activate(RectTransform rectMakeupOption, Sprite sprite, Color color)
   {
     _handController.SetItem(this);
@@ -68,6 +72,7 @@ public class CompositeItem : Item
     StartCoroutine(InteractWithHand());
   }
 
+  // раскраска кончика кисти в выбранный цвет
   private IEnumerator DrawTriggerItemZone()
   {
     Image image = _triggerItemZone.gameObject.GetComponent<Image>();
@@ -94,6 +99,7 @@ public class CompositeItem : Item
     image.color = finalColor;
   }
 
+  // для очистки кончика кисти
   private void ClearItemColor()
   {
     Image image = _triggerItemZone.gameObject.GetComponent<Image>();

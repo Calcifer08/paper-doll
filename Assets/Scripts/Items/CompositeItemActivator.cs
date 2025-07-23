@@ -13,6 +13,7 @@ public class CompositeItemActivator : MonoBehaviour, IPointerClickHandler
     _rectTransform = GetComponent<RectTransform>();
   }
 
+  // вызывается при спавне
   public void Initialize(CompositeItem item, Sprite sprite)
   {
     if (item == null)
@@ -36,6 +37,7 @@ public class CompositeItemActivator : MonoBehaviour, IPointerClickHandler
     _compositeItem.Activate(_rectTransform, _sprite, color);
   }
 
+  // т.к. не было спрайтов для окраски кончика кисти, пришлось брать цвета из спрайтов
   private Color GetCenterColor(Sprite sprite)
   {
     Texture2D texture = sprite.texture;

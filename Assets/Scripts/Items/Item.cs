@@ -33,6 +33,7 @@ public abstract class Item : MonoBehaviour
     _rectTrans = GetComponent<RectTransform>();
     if (_triggerItemZone == null)
     {
+      // на случай если ссылку не добавили и дочерних объектов несколько
       _triggerItemZone = GameObject.Find("TriggerZone").GetComponent<RectTransform>();
     }
 
@@ -75,6 +76,7 @@ public abstract class Item : MonoBehaviour
 
   protected abstract IEnumerator ItemAction();
 
+  // если запоминать их при старте, то GridLayoutGroup их передвинет потом и изменения не зафиксируются
   public void SaveItemlPosition()
   {
     _originalParent = _rectTrans.parent;

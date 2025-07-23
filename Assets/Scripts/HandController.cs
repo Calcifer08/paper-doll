@@ -38,6 +38,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
   {
     if (!isDrag) return;
 
+    // чтобы не перекрывал предметы под собой для взаимодействия, когда передвигаем
     _canvasGroup.blocksRaycasts = false;
   }
 
@@ -58,11 +59,17 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     StartCoroutine(_draggedItem.HandleDrop());
   }
 
+  public void EndInteract()
+  {
+    isDrag = true;
+  }
+
   public void SetItem(Item item)
   {
     if (_draggedItem != null) return;
     _draggedItem = item;
 
+    // блокируем возможность нажатие на другие предметы
     _raycastBlock.raycastTarget = true;
 
     _draggedItem.SaveItemlPosition();
@@ -93,6 +100,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
   public void TakeItem(RectTransform itemRect)
   {
+    // при работе с GridLayoutGroup и т.п. нужно подменять взятый предмет на пустышку, чтобы не сдвигались другие
     GameObject placeholder = Instantiate(_placeholderPrefab, itemRect.parent);
     RectTransform placeholderRT = placeholder.GetComponent<RectTransform>();
     placeholderRT.SetSiblingIndex(itemRect.GetSiblingIndex());
@@ -105,6 +113,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
   public void DropItem(RectTransform itemRect, Transform parent, Vector2 anchoredPosition)
   {
+    // чтобы вернуть на своё место, а не в конец
     int index = _placeholder.transform.GetSiblingIndex();
 
     itemRect.SetParent(parent, true);
@@ -117,6 +126,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     _raycastBlock.raycastTarget = false;
   }
 
+  // т.к. предмет в руке торчит из неё, надо учитывать именно его точку, а не руки
   public Vector3 CalculateGripPositionWithOffset(RectTransform targetRect, RectTransform triggerItemRect)
   {
     Vector3 topOffset = triggerItemRect.up * (triggerItemRect.rect.height / 2f) * triggerItemRect.lossyScale.y;
@@ -131,8 +141,6 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     Vector3 halfwayPos = Vector3.Lerp(_rtHandRoot.position, targetPos, 0.5f);
 
     yield return StartCoroutine(MoveHand(halfwayPos, duration));
-
-    isDrag = true;
   }
 
   public IEnumerator BackItemCoroutine(Vector3 targetPos, float duration)

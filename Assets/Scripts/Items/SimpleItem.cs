@@ -22,6 +22,8 @@ public class SimpleItem : Item, IPointerClickHandler
 
     Vector3 target = GameManager.Instance.FaceZone.position;
     yield return StartCoroutine(_handController.MoveToHalfCoroutine(target, _durationMoveHand));
+
+    _handController.EndInteract();
   }
 
   public override IEnumerator HandleDrop()
@@ -50,6 +52,7 @@ public class SimpleItem : Item, IPointerClickHandler
     _handController.DropItem(_rectTrans, _originalParent, _originalAnchoredPosition);
   }
 
+  // если предмет может окрасить
   public void SetMakeupSprite(Sprite sprite)
   {
     _spriteMakeupColor = sprite;
